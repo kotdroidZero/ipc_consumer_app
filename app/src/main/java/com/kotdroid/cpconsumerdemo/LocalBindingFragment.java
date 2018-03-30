@@ -22,13 +22,13 @@ import butterknife.OnClick;
  * Created by user12 on 29/3/18.
  */
 
-public class ServiceFragment extends Fragment {
+public class LocalBindingFragment extends Fragment {
 
     @BindView(R.id.tvRandomNumber) TextView tvRandomNumber;
 
     private Intent serviceIntent;
 
-    private LocalBoundService mLocalBoundService;
+    private LocalBindingService mLocalBindingService;
 
     private ServiceConnection mServiceConnection;
     private boolean isServiceBound = false;
@@ -41,7 +41,7 @@ public class ServiceFragment extends Fragment {
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        serviceIntent = new Intent(getContext(), LocalBoundService.class);
+        serviceIntent = new Intent(getContext(), LocalBindingService.class);
 
     }
 
@@ -81,8 +81,8 @@ public class ServiceFragment extends Fragment {
         if (null == mServiceConnection) {
             mServiceConnection = new ServiceConnection() {
                 @Override public void onServiceConnected(ComponentName name, IBinder service) {
-                    LocalBoundService.MyServiceBinder binder = ((LocalBoundService.MyServiceBinder) service);
-                    mLocalBoundService = binder.getService();
+                    LocalBindingService.MyServiceBinder binder = ((LocalBindingService.MyServiceBinder) service);
+                    mLocalBindingService = binder.getService();
                     isServiceBound = true;
                 }
 
@@ -97,7 +97,7 @@ public class ServiceFragment extends Fragment {
 
     public void getRandomNumber() {
         if (isServiceBound) {
-            tvRandomNumber.setText("The random number is: " + String.valueOf(mLocalBoundService.getRandomNumber()));
+            tvRandomNumber.setText("The random number is: " + String.valueOf(mLocalBindingService.getRandomNumber()));
         } else
             tvRandomNumber.setText("Service is not bound");
     }

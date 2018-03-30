@@ -31,7 +31,14 @@ public class MainActivity extends AppCompatActivity {
         Log.d("ServiceDemo", "MainActivity Thread id:" + Thread.currentThread().getId());
     }
 
-    @OnClick({R.id.btnSubmit, R.id.btnOpenFragment, R.id.btnStartService})
+    @Override public void onBackPressed() {
+        if (0 < getSupportFragmentManager().getBackStackEntryCount()) {
+            getSupportFragmentManager().popBackStackImmediate();
+            findViewById(R.id.flContainerMain).setVisibility(View.GONE);
+        } else super.onBackPressed();
+    }
+
+    @OnClick({R.id.btnSubmit, R.id.btnOpenFragment, R.id.btnStartService, R.id.btnIPCRemoteBinding})
     public void onSubmit(View view) {
 
         switch (view.getId()) {
@@ -49,15 +56,17 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.btnOpenFragment:
                 findViewById(R.id.flContainerMain).setVisibility(View.VISIBLE);
-                getSupportFragmentManager().beginTransaction().add(R.id.flContainerMain, new IPCSharedUserIdFragment()).commit();
+                getSupportFragmentManager().beginTransaction().add(R.id.flContainerMain, new IPCSharedUserIdFragment()).addToBackStack(null).commit();
                 break;
             case R.id.btnStartService:
                 findViewById(R.id.flContainerMain).setVisibility(View.VISIBLE);
-                getSupportFragmentManager().beginTransaction().add(R.id.flContainerMain, new ServiceFragment()).commit();
+                getSupportFragmentManager().beginTransaction().add(R.id.flContainerMain, new LocalBindingFragment()).addToBackStack(null).commit();
+                break;
+            case R.id.btnIPCRemoteBinding:
+                findViewById(R.id.flContainerMain).setVisibility(View.VISIBLE);
+                getSupportFragmentManager().beginTransaction().add(R.id.flContainerMain, new RemoteBindingFragment()).addToBackStack(null).commit();
                 break;
 
         }
-
-
     }
 }

@@ -3,6 +3,7 @@ package com.kotdroid.cpconsumerdemo;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -14,6 +15,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,6 +33,7 @@ public class IPCSharedUserIdFragment extends Fragment {
 
     @BindView(R.id.btnPrefs) Button btnSave;
     @BindView(R.id.tvPrefsData) TextView tvTextMessage;
+    @BindView(R.id.tvFileData) TextView tvFileData;
     @BindView(R.id.tvResources) TextView tvResources;
     @BindView(R.id.rootLayout) LinearLayout rootLayout;
 
@@ -56,7 +63,7 @@ public class IPCSharedUserIdFragment extends Fragment {
         }
     }
 
-    @SuppressLint("ResourceType") @OnClick({R.id.btnPrefs, R.id.btnStringResource, R.id.btnDrawableResource, R.id.btnColorResource})
+    @SuppressLint("ResourceType") @OnClick({R.id.btnPrefs, R.id.btnStringResource, R.id.btnDrawableResource, R.id.btnColorResource, R.id.btnFileData})
     public void loadFile(View view) {
         switch (view.getId()) {
             case R.id.btnPrefs:
@@ -76,26 +83,36 @@ public class IPCSharedUserIdFragment extends Fragment {
                 int idColor = resources.getIdentifier("colorDemo", "color", PKG_NAME_APPDEMO);
                 rootLayout.setBackgroundColor(resources.getColor(idColor));
                 break;
+            case R.id.btnFileData:
+                PackageManager packageManager = getActivity().getPackageManager();
+                try {
+                    ApplicationInfo applicationInfo = packageManager.getApplicationInfo(PKG_NAME_APPDEMO, Context.CONTEXT_IGNORE_SECURITY);
+                    String path = applicationInfo.dataDir + "/demofile.txt";
+                    readFile(path);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+                break;
         }
     }
 
-//    private void readFile(String fullPath) {
-//        try {
-//            FileInputStream fis = new FileInputStream(new File(fullPath));
-//            int read = -1;
-//            StringBuffer stringBuffer = new StringBuffer();
-//            while ((read = fis.read()) != -1) {
-//                stringBuffer.append((char) read);
-//            }
-//            tvTextMessage.setText(stringBuffer.toString());
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//            tvTextMessage.setText(e.getLocalizedMessage());
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            tvTextMessage.setText(e.getLocalizedMessage());
-//        }
-//    }
+    private void readFile(String fullPath) {
+        try {
+            FileInputStream fis = new FileInputStream(new File(fullPath));
+            int read = -1;
+            StringBuffer stringBuffer = new StringBuffer();
+            while ((read = fis.read()) != -1) {
+                stringBuffer.append((char) read);
+            }
+            tvFileData.setText(stringBuffer.toString());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            tvFileData.setText(e.getLocalizedMessage());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            tvFileData.setText(e.getLocalizedMessage());
+        }
+    }
 
 }

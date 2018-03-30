@@ -20,7 +20,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".LocalBoundService" />
+
+        <service android:name=".LocalBindingService" />
+        <service
+            android:name=".RemoteBindingService"
+            android:exported="true" />
     </application>
 
 

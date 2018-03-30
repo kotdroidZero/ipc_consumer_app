@@ -2,11 +2,8 @@ package com.kotdroid.cpconsumerdemo;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.Handler;
+import android.os.Binder;
 import android.os.IBinder;
-import android.os.Message;
-import android.os.Messenger;
-import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -16,18 +13,18 @@ import java.util.Random;
  * Created by user12 on 29/3/18.
  */
 
-public class RemoteBoundService extends Service {
+public class LocalBindingService extends Service {
 
     private static final int MIN = 0;
     private static final int MAX = 100;
-    public static final int GET_COUNT = 0;
     private int randomNumber;
 
     private boolean shouldGenerateRandomNumber;
 
+    private IBinder serviceBinder = new MyServiceBinder();
 
     @Nullable @Override public IBinder onBind(Intent intent) {
-        return randomNumerMessenger.getBinder();
+        return serviceBinder;
     }
 
     @Override public void onCreate() {
@@ -62,6 +59,12 @@ public class RemoteBoundService extends Service {
         }
     }
 
+     class MyServiceBinder extends Binder {
+
+         LocalBindingService getService() {
+            return LocalBindingService.this;
+        }
+    }
 
     public void stopRandomNumberGenerator() {
         shouldGenerateRandomNumber = false;
@@ -70,24 +73,5 @@ public class RemoteBoundService extends Service {
     public int getRandomNumber() {
         return randomNumber;
     }
-
-    public class RandomNumberRequestHandler extends Handler {
-        @Override public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case GET_COUNT:
-                    Message messageSendRandomNumber = Message.obtain(null, GET_COUNT);
-                    messageSendRandomNumber.arg1 = getRandomNumber();
-                    try {
-                        msg.replyTo.send(messageSendRandomNumber);
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-            }
-        }
-    }
-
-    private Messenger randomNumerMessenger = new Messenger(new RandomNumberRequestHandler());
-
 }
 

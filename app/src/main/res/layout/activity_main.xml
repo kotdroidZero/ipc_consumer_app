@@ -38,14 +38,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="IPC" />
+        android:text="IPC (sharedUserId)" />
 
     <Button
         android:id="@+id/btnStartService"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Start Service" />
+        android:text="Local Binding" />
+
+    <Button
+        android:id="@+id/btnIPCRemoteBinding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="IPC (Remote Binding Service)" />
 
 
 </LinearLayout>

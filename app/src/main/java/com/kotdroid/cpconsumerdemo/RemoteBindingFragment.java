@@ -1,5 +1,6 @@
 package com.kotdroid.cpconsumerdemo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,7 +15,9 @@ import butterknife.OnClick;
  * Created by user12 on 29/3/18.
  */
 
-public class IPCServiceFragment extends Fragment {
+public class RemoteBindingFragment extends Fragment {
+
+    private Intent remoteIntent;
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_ipc_using_service, container, false);
@@ -29,8 +32,11 @@ public class IPCServiceFragment extends Fragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnStartService:
+                remoteIntent = new Intent(getActivity(), RemoteBindingService.class);
+                getActivity().startService(remoteIntent);
                 break;
             case R.id.btnStopService:
+                getActivity().stopService(remoteIntent);
                 break;
 
         }
